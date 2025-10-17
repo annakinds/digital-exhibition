@@ -16,7 +16,6 @@ const monitorPlaneMaterial = new THREE.ShaderMaterial({
     fragmentShader: portalFragmentShader
 });
 
-console.log(portalVertexShader);
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const canvas = document.querySelector('canvas.webgl');
@@ -37,6 +36,15 @@ const cubeTextures = [
     'assets/pictures/Box 3.png',
     'assets/pictures/Box 2.png',
     'assets/pictures/Box 1.png',
+];
+
+const frames = [
+    'assets/pictures/horizontalPhoto1.jpg',
+    'assets/pictures/horizontalPhoto2.jpg',
+    'assets/pictures/roundPhoto1.jpg',
+    'assets/pictures/roundPhoto2.jpg',
+    'assets/pictures/verticalPhoto1.jpg',
+    'assets/pictures/verticalPhoto2.jpg'
 ];
 
 
@@ -102,15 +110,62 @@ directionalLight2.position.set(-5, 10, -7.5);
 
 
 const loader = new GLTFLoader();
+const textures = [];
+
+frames.forEach((frame, index) => {
+    const texture = textureLoader.load(frame, () => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.y = -1;
+        texture.offset.y = 1;
+    });
+    textures.push(texture);
+});
+
+
 loader.load(
     'assets/Exhibition.glb',
     (gltf) => {
-        // gltf.scene.traverse(child => {
-        //     child.material = material;
-        // });
+        gltf.scene.traverse(child => {
+            if (child.name === "horizontalPlane_right") {
+                child.material = new THREE.MeshBasicMaterial({
+                    map: textures[0],
+                    side: THREE.DoubleSide
+                });
+            }
+            if (child.name === "horizontalPlane_left") {
+                child.material = new THREE.MeshBasicMaterial({
+                    map: textures[1],
+                    side: THREE.DoubleSide
+                });
+            }
+            if (child.name === "verticalPlane_right") {
+                child.material = new THREE.MeshBasicMaterial({
+                    map: textures[2],
+                    side: THREE.DoubleSide
+                });
+            }
+            if (child.name === "verticalPlane_left") {
+                child.material = new THREE.MeshBasicMaterial({
+                    map: textures[3],
+                    side: THREE.DoubleSide
+                });
+            }
+            if (child.name === "roundPlane_right") {
+                child.material = new THREE.MeshBasicMaterial({
+                    map: textures[4],
+                    side: THREE.DoubleSide
+                });
+            }
+            if (child.name === "roundPlane_left") {
+                child.material = new THREE.MeshBasicMaterial({
+                    map: textures[5],
+                    side: THREE.DoubleSide
+                });
+            }
+        });
 
-        gltf.scene.position.set(0, 0, 0); // midden van de scene
-        // eventueel schalen als nodig:
+        gltf.scene.position.set(0, 0, 0);
         gltf.scene.scale.set(1, 1, 1);
         scene.add(gltf.scene);
     }
