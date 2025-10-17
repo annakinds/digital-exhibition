@@ -1,11 +1,29 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import portalVertexShader from '/shaders/portal/vertex.glsl?raw';
+import portalFragmentShader from '/shaders/portal/fragment.glsl?raw';
+
+const monitorPlaneMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+        uTex0: { value: null },
+        uTex1: { value: null },
+        uTex2: { value: null },
+        uTex3: { value: null },
+        uResolution: { value: new THREE.Vector2() },
+        uFrame: { value: 0.0 }
+    },
+    vertexShader: portalVertexShader,
+    fragmentShader: portalFragmentShader
+});
+
+console.log(portalVertexShader);
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const canvas = document.querySelector('canvas.webgl');
 const scene = new THREE.Scene();
 const textureLoader = new THREE.TextureLoader();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+// const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -71,13 +89,25 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(size.width, size.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+scene.add(directionalLight);
+directionalLight.position.set(5, 10, 7.5);
+const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1);
+scene.add(directionalLight2);
+directionalLight2.position.set(-5, 10, -7.5);
+
+
+
 const loader = new GLTFLoader();
 loader.load(
     'assets/Exhibition.glb',
     (gltf) => {
-        gltf.scene.traverse(child => {
-            child.material = material;
-        });
+        // gltf.scene.traverse(child => {
+        //     child.material = material;
+        // });
 
         gltf.scene.position.set(0, 0, 0); // midden van de scene
         // eventueel schalen als nodig:
