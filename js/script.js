@@ -3,18 +3,9 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import portalVertexShader from '/shaders/portal/vertex.glsl?raw';
 import portalFragmentShader from '/shaders/portal/fragment.glsl?raw';
 
-const monitorPlaneMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-        uTex0: { value: null },
-        uTex1: { value: null },
-        uTex2: { value: null },
-        uTex3: { value: null },
-        uResolution: { value: new THREE.Vector2() },
-        uFrame: { value: 0.0 }
-    },
-    vertexShader: portalVertexShader,
-    fragmentShader: portalFragmentShader
-});
+
+
+
 
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
@@ -122,16 +113,31 @@ frames.forEach((frame, index) => {
     textures.push(texture);
 });
 
+const monitorPlaneMaterial = new THREE.ShaderMaterial({
+    glslVersion: THREE.GLSL3,
+    uniforms: {
+        uTex0: { value: textures[0] }, // de texture van de plane
+        uTex1: { value: textures[1] }, // kan extra effecten of noise zijn
+        uTex2: { value: textures[2] }, // indien nodig
+        uTex3: { value: textures[3] }, // indien nodig
+        uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+        uFrame: { value: 0.0 }
+    },
+    vertexShader: portalVertexShader,
+    fragmentShader: portalFragmentShader
+});
+
 
 loader.load(
     'assets/Exhibition.glb',
     (gltf) => {
         gltf.scene.traverse(child => {
             if (child.name === "horizontalPlane_right") {
-                child.material = new THREE.MeshBasicMaterial({
-                    map: textures[0],
-                    side: THREE.DoubleSide
-                });
+                child.material = monitorPlaneMaterial;
+                // child.material = new THREE.MeshBasicMaterial({
+                //     map: textures[0],
+                //     side: THREE.DoubleSide
+                // });
             }
             if (child.name === "horizontalPlane_left") {
                 child.material = new THREE.MeshBasicMaterial({
