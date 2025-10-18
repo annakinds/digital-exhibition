@@ -1,9 +1,6 @@
-precision highp float;
-
-out vec2 vUV; // output naar fragment shader
+varying vec2 vUv;
 
 void main() {
-    vUV = uv; // uv komt automatisch van Three.js
+    vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    // position, modelViewMatrix, projectionMatrix komen automatisch van Three.js
 }

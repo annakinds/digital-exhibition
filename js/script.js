@@ -2,10 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import portalVertexShader from '/shaders/portal/vertex.glsl?raw';
 import portalFragmentShader from '/shaders/portal/fragment.glsl?raw';
-
-
-
-
+import { texture } from 'three/src/nodes/TSL.js';
 
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
@@ -22,7 +19,6 @@ let isDragging = false;
 let previousMouseX = 0;
 let previousMouseY = 0;
 
-
 const cubeTextures = [
     'assets/pictures/Box 3.png',
     'assets/pictures/Box 2.png',
@@ -38,7 +34,6 @@ const frames = [
     'assets/pictures/verticalPhoto2.jpg'
 ];
 
-
 const cubeGroup = new THREE.Group();
 scene.add(cubeGroup);
 
@@ -48,6 +43,7 @@ const createWrappedCube = (texturePath, positionY) => {
         sideTexture.wrapT = THREE.ClampToEdgeWrapping;
         sideTexture.repeat.set(0.25, 1);
 
+        
         const materials = [
             new THREE.MeshBasicMaterial({ map: sideTexture.clone() }),
             new THREE.MeshBasicMaterial({ map: sideTexture.clone() }),
@@ -98,10 +94,9 @@ const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1);
 scene.add(directionalLight2);
 directionalLight2.position.set(-5, 10, -7.5);
 
-
-
 const loader = new GLTFLoader();
 const textures = [];
+
 
 frames.forEach((frame, index) => {
     const texture = textureLoader.load(frame, () => {
@@ -112,21 +107,17 @@ frames.forEach((frame, index) => {
     });
     textures.push(texture);
 });
+console.log(textures);
 
 const monitorPlaneMaterial = new THREE.ShaderMaterial({
-    glslVersion: THREE.GLSL3,
     uniforms: {
-        uTex0: { value: textures[0] }, // de texture van de plane
-        uTex1: { value: textures[1] }, // kan extra effecten of noise zijn
-        uTex2: { value: textures[2] }, // indien nodig
-        uTex3: { value: textures[3] }, // indien nodig
-        uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-        uFrame: { value: 0.0 }
+        iResolution: { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 1) },
+        iTime: { value: 0 },
+        iChannel0: { value: textures[0] },
     },
     vertexShader: portalVertexShader,
-    fragmentShader: portalFragmentShader
-});
-
+    fragmentShader: portalFragmentShader,
+})
 
 loader.load(
     'assets/Exhibition.glb',
@@ -177,10 +168,15 @@ loader.load(
     }
 );
 
+const clock = new THREE.Clock()
 const draw = () => {
-    // controls.update();
-    renderer.render(scene, camera);
-    window.requestAnimationFrame(draw);
+    const elapsedTime = clock.getElapsedTime()
+
+    monitorPlaneMaterial.uniforms.iTime.value = elapsedTime
+
+    // controls.update()
+    renderer.render(scene, camera)
+    window.requestAnimationFrame(draw)
 }
 draw();
 
