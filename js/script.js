@@ -237,7 +237,7 @@ const shaderMaterials = textures.map((texture) => {
 //loader
 const loader = new GLTFLoader();
 loader.load(
-    'assets/Exhibition.glb',
+    'assets/blender/Exhibition.glb',
     (gltf) => {
         gltf.scene.traverse(child => {
             const names = [
