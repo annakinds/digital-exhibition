@@ -1,7 +1,7 @@
 uniform float iTime;
 uniform sampler2D iChannel0;
 
-varying vec2 vUv;   // <-- komt vanuit vertex shader
+varying vec2 vUv;   
 
 const int MaxIter = 9;
 float scl = 1.0;
