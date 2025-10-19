@@ -74,6 +74,7 @@ float d2line(vec2 p, vec2 a, vec2 b){
 void main() {
     // Gebruik vUv als basis in plaats van gl_FragCoord
     vec2 uv = vUv;
+    uv.y = 1.0 - uv.y; 
 
     init();
 

@@ -109,56 +109,39 @@ frames.forEach((frame, index) => {
 });
 console.log(textures);
 
-const monitorPlaneMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-        iResolution: { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 1) },
-        iTime: { value: 0 },
-        iChannel0: { value: textures[0] },
-    },
-    vertexShader: portalVertexShader,
-    fragmentShader: portalFragmentShader,
-})
+const shadertoy = textures.map((texture) => {
+    return new THREE.ShaderMaterial({
+        uniforms: {
+            iResolution: { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 1) },
+            iTime: { value: 0 },
+            iChannel0: { value: texture },
+        },
+        vertexShader: portalVertexShader,
+        fragmentShader: portalFragmentShader,
+    });
+});
 
 loader.load(
     'assets/Exhibition.glb',
     (gltf) => {
         gltf.scene.traverse(child => {
             if (child.name === "horizontalPlane_right") {
-                child.material = monitorPlaneMaterial;
-                // child.material = new THREE.MeshBasicMaterial({
-                //     map: textures[0],
-                //     side: THREE.DoubleSide
-                // });
+                child.material = shadertoy[0];
             }
             if (child.name === "horizontalPlane_left") {
-                child.material = new THREE.MeshBasicMaterial({
-                    map: textures[1],
-                    side: THREE.DoubleSide
-                });
+                child.material = shadertoy[1];
             }
             if (child.name === "verticalPlane_right") {
-                child.material = new THREE.MeshBasicMaterial({
-                    map: textures[2],
-                    side: THREE.DoubleSide
-                });
+                child.material = shadertoy[2];
             }
             if (child.name === "verticalPlane_left") {
-                child.material = new THREE.MeshBasicMaterial({
-                    map: textures[3],
-                    side: THREE.DoubleSide
-                });
+                child.material = shadertoy[3];
             }
             if (child.name === "roundPlane_right") {
-                child.material = new THREE.MeshBasicMaterial({
-                    map: textures[4],
-                    side: THREE.DoubleSide
-                });
+                child.material = shadertoy[4];
             }
             if (child.name === "roundPlane_left") {
-                child.material = new THREE.MeshBasicMaterial({
-                    map: textures[5],
-                    side: THREE.DoubleSide
-                });
+                child.material = shadertoy[5];
             }
         });
 
@@ -172,8 +155,9 @@ const clock = new THREE.Clock()
 const draw = () => {
     const elapsedTime = clock.getElapsedTime()
 
-    monitorPlaneMaterial.uniforms.iTime.value = elapsedTime
-
+    shadertoy.forEach((mat) => {
+        mat.uniforms.iTime.value = elapsedTime
+    });
     // controls.update()
     renderer.render(scene, camera)
     window.requestAnimationFrame(draw)
