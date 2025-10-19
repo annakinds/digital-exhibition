@@ -95,8 +95,8 @@ async function loadShader(url) {
 }
 
 async function init() {
-    const portalVertexShader = await loadShader('vertex.glsl');
-    const portalFragmentShader = await loadShader('fragment.glsl');
+    const portalVertexShader = await loadShader('https://annakinds.github.io/shaders/portal/vertex.glsl');
+    const portalFragmentShader = await loadShader('https://annakinds.github.io/shaders/portal/fragment.glsl');
 
     frames.forEach((frame) => {
         const texture = textureLoader.load(frame, () => {
