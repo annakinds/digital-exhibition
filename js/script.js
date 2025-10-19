@@ -3,6 +3,7 @@ import { GLTFLoader } from "https://unpkg.com/three@0.169.0/examples/jsm/loaders
 // import portalVertexShader from '../shaders/portal/vertex.glsl?raw';
 // import portalFragmentShader from '../shaders/portal/fragment.glsl?raw';
 
+//shaders
 const portalVertexShader = `precision highp float;
 varying vec2 vUv;
 
@@ -118,6 +119,7 @@ void main() {
 }
 `;
 
+//scene setup
 const canvas = document.querySelector('canvas.webgl');
 const scene = new THREE.Scene();
 const textureLoader = new THREE.TextureLoader();
@@ -144,10 +146,12 @@ scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 scene.add(directionalLight);
 directionalLight.position.set(5, 10, 7.5);
+
 const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1);
 scene.add(directionalLight2);
-directionalLight2.position.set(-5, 10, -7.5);
+directionalLight2.position.set(-5, 5, 7.5);
 
+//cubes
 const cubeTextures = [
     'assets/pictures/Box 3.png',
     'assets/pictures/Box 2.png',
@@ -189,6 +193,7 @@ createWrappedCube(cubeTextures[2], 4.2);
 cubeGroup.position.x = -4;
 cubeGroup.position.y = 2; 
 
+//frames
 const frames = [
     'assets/pictures/horizontalPhoto1.jpg',
     'assets/pictures/horizontalPhoto2.jpg',
@@ -229,6 +234,7 @@ const shaderMaterials = textures.map((texture) => {
     });
 });
 
+//loader
 const loader = new GLTFLoader();
 loader.load(
     'assets/Exhibition.glb',
@@ -266,6 +272,7 @@ const draw = () => {
 }
 draw();
 
+//eventlisteners
 window.addEventListener('resize', () => {
     size.width = window.innerWidth;
     size.height = window.innerHeight;
