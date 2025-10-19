@@ -2,83 +2,22 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import portalVertexShader from '/shaders/portal/vertex.glsl?raw';
 import portalFragmentShader from '/shaders/portal/fragment.glsl?raw';
-import { texture } from 'three/src/nodes/TSL.js';
-
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const canvas = document.querySelector('canvas.webgl');
 const scene = new THREE.Scene();
 const textureLoader = new THREE.TextureLoader();
-
-// const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let selectedCube = null;
 let isDragging = false;
-let previousMouseX = 0;
+let previousMouseX = 0
 let previousMouseY = 0;
-
-const cubeTextures = [
-    'assets/pictures/Box 3.png',
-    'assets/pictures/Box 2.png',
-    'assets/pictures/Box 1.png',
-];
-
-const frames = [
-    'assets/pictures/horizontalPhoto1.jpg',
-    'assets/pictures/horizontalPhoto2.jpg',
-    'assets/pictures/roundPhoto1.jpg',
-    'assets/pictures/roundPhoto2.jpg',
-    'assets/pictures/verticalPhoto1.jpg',
-    'assets/pictures/verticalPhoto2.jpg'
-];
-
-const cubeGroup = new THREE.Group();
-scene.add(cubeGroup);
-
-const createWrappedCube = (texturePath, positionY) => {
-    textureLoader.load(texturePath, (sideTexture) => {
-        sideTexture.wrapS = THREE.RepeatWrapping;
-        sideTexture.wrapT = THREE.ClampToEdgeWrapping;
-        sideTexture.repeat.set(0.25, 1);
-
-        
-        const materials = [
-            new THREE.MeshBasicMaterial({ map: sideTexture.clone() }),
-            new THREE.MeshBasicMaterial({ map: sideTexture.clone() }),
-            new THREE.MeshBasicMaterial({ color: 0x808080 }),
-            new THREE.MeshBasicMaterial({ color: 0x808080 }),
-            new THREE.MeshBasicMaterial({ map: sideTexture.clone() }),
-            new THREE.MeshBasicMaterial({ map: sideTexture.clone() })
-        ];
-
-        materials[0].map.offset.x = 0;
-        materials[1].map.offset.x = 0.25;
-        materials[4].map.offset.x = 0.5;
-        materials[5].map.offset.x = 0.75;  
-
-        const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), materials);
-        cube.position.y = positionY;
-        cubeGroup.add(cube);
-    });
-};
-
-createWrappedCube(cubeTextures[0], 0);
-createWrappedCube(cubeTextures[1], 2.1);
-createWrappedCube(cubeTextures[2], 4.2);
-
-cubeGroup.position.x = -7;
-cubeGroup.position.y = 2; 
 
 const size = { width: window.innerWidth, height: window.innerHeight };
 const camera = new THREE.PerspectiveCamera(110, size.width / size.height, 0.1, 100);
 camera.position.set(0, 5, 10);
 camera.lookAt(0, 1, 0);
 scene.add(camera);
-
-// const controls = new OrbitControls(camera, canvas);
-// controls.enableDamping = true;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(size.width, size.height);
@@ -94,12 +33,60 @@ const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1);
 scene.add(directionalLight2);
 directionalLight2.position.set(-5, 10, -7.5);
 
-const loader = new GLTFLoader();
+const cubeTextures = [
+    'assets/pictures/Box 3.png',
+    'assets/pictures/Box 2.png',
+    'assets/pictures/Box 1.png',
+];
+
+const cubeGroup = new THREE.Group();
+scene.add(cubeGroup);
+const createWrappedCube = (texturePath, positionY) => {
+    textureLoader.load(texturePath, (sideTexture) => {
+        sideTexture.wrapS = THREE.RepeatWrapping;
+        sideTexture.wrapT = THREE.ClampToEdgeWrapping;
+        sideTexture.repeat.set(0.25, 1);
+
+        const materials = [
+            new THREE.MeshBasicMaterial({ map: sideTexture.clone() }),
+            new THREE.MeshBasicMaterial({ map: sideTexture.clone() }),
+            new THREE.MeshBasicMaterial({ color: 0x808080 }),
+            new THREE.MeshBasicMaterial({ color: 0x808080 }),
+            new THREE.MeshBasicMaterial({ map: sideTexture.clone() }),
+            new THREE.MeshBasicMaterial({ map: sideTexture.clone() })
+        ];
+
+        materials[0].map.offset.x = 0;
+        materials[1].map.offset.x = 0.25;
+        materials[4].map.offset.x = 0.5;
+        materials[5].map.offset.x = 0.75;
+
+        const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), materials);
+        cube.position.y = positionY;
+        cubeGroup.add(cube);
+    });
+};
+
+createWrappedCube(cubeTextures[0], 0);
+createWrappedCube(cubeTextures[1], 2.1);
+createWrappedCube(cubeTextures[2], 4.2);
+
+cubeGroup.position.x = -7;
+cubeGroup.position.y = 2; 
+
+const frames = [
+    'assets/pictures/horizontalPhoto1.jpg',
+    'assets/pictures/horizontalPhoto2.jpg',
+    'assets/pictures/roundPhoto1.jpg',
+    'assets/pictures/roundPhoto2.jpg',
+    'assets/pictures/verticalPhoto1.jpg',
+    'assets/pictures/verticalPhoto2.jpg'
+];
+
 const textures = [];
 const photoPlanes = [];
 
-
-frames.forEach((frame, index) => {
+frames.forEach((frame) => {
     const texture = textureLoader.load(frame, () => {
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
@@ -108,10 +95,9 @@ frames.forEach((frame, index) => {
     });
     textures.push(texture);
 });
-console.log(textures);
 
-const basicMaterials = textures.map((tex) => {
-    return new THREE.MeshBasicMaterial({ map: tex });
+const basicMaterials = textures.map((texture) => {
+    return new THREE.MeshBasicMaterial({ map: texture });
 });
 
 const shaderMaterials = textures.map((texture) => {
@@ -126,7 +112,7 @@ const shaderMaterials = textures.map((texture) => {
     });
 });
 
-
+const loader = new GLTFLoader();
 loader.load(
     'assets/Exhibition.glb',
     (gltf) => {
@@ -139,15 +125,13 @@ loader.load(
                 "roundPlane_right",
                 "roundPlane_left"
             ];
-
             const index = names.indexOf(child.name);
             if (index !== -1) {
-                child.material = basicMaterials[index]; // Eerst gewone texture
-                child.userData.shaderIndex = index;      // Onthouden welke shader hoort
-                photoPlanes.push(child);                // Klikbaar maken
+                child.material = basicMaterials[index];
+                child.userData.shaderIndex = index;
+                photoPlanes.push(child);
             }
         });
-
         gltf.scene.position.set(0, 0, 0);
         gltf.scene.scale.set(1, 1, 1);
         scene.add(gltf.scene);
@@ -157,11 +141,9 @@ loader.load(
 const clock = new THREE.Clock()
 const draw = () => {
     const elapsedTime = clock.getElapsedTime()
-
-    shaderMaterials.forEach((mat) => {
-        mat.uniforms.iTime.value = elapsedTime
+    shaderMaterials.forEach((material) => {
+        material.uniforms.iTime.value = elapsedTime
     });
-    // controls.update()
     renderer.render(scene, camera)
     window.requestAnimationFrame(draw)
 }
@@ -179,33 +161,15 @@ window.addEventListener('resize', () => {
 window.addEventListener('mousedown', (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(cubeGroup.children);
-
     if (intersects.length > 0) {
         selectedCube = intersects[0].object;
         isDragging = true;
         previousMouseX = event.clientX;
         previousMouseY = event.clientY;
     }
-
 });
-
-window.addEventListener('click', (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(photoPlanes);
-
-    if (intersects.length > 0) {
-        const plane = intersects[0].object;
-        const shaderIndex = plane.userData.shaderIndex;
-        plane.material = shaderMaterials[shaderIndex];
-    }
-});
-
 
 window.addEventListener('mousemove', (event) => {
     if (isDragging && selectedCube) {
@@ -221,3 +185,23 @@ window.addEventListener('mouseup', () => {
     isDragging = false;
     selectedCube = null;
 });
+
+window.addEventListener('click', (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(photoPlanes);
+
+    if (intersects.length > 0) {
+        const plane = intersects[0].object;
+        const shaderIndex = plane.userData.shaderIndex;
+
+        if (plane.material === shaderMaterials[shaderIndex]) {
+            plane.material = basicMaterials[shaderIndex];
+        } else {
+            plane.material = shaderMaterials[shaderIndex];
+        }
+    }
+});
+
