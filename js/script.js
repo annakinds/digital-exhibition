@@ -1,7 +1,7 @@
-import * as THREE from 'three';
+import * as THREE from 'three'; 
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import portalVertexShader from '/shaders/portal/vertex.glsl?raw';
-import portalFragmentShader from '/shaders/portal/fragment.glsl?raw';
+import portalVertexShader from '../shaders/portal/vertex.glsl?raw';
+import portalFragmentShader from '../shaders/portal/fragment.glsl?raw';
 
 const canvas = document.querySelector('canvas.webgl');
 const scene = new THREE.Scene();
@@ -14,9 +14,9 @@ let previousMouseX = 0
 let previousMouseY = 0;
 
 const size = { width: window.innerWidth, height: window.innerHeight };
-const camera = new THREE.PerspectiveCamera(110, size.width / size.height, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(90, size.width / size.height, 0.1, 100);
 camera.position.set(0, 5, 10);
-camera.lookAt(0, 1, 0);
+camera.lookAt(0, 5, 0);
 scene.add(camera);
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -71,7 +71,7 @@ createWrappedCube(cubeTextures[0], 0);
 createWrappedCube(cubeTextures[1], 2.1);
 createWrappedCube(cubeTextures[2], 4.2);
 
-cubeGroup.position.x = -7;
+cubeGroup.position.x = -4;
 cubeGroup.position.y = 2; 
 
 const frames = [
@@ -118,12 +118,12 @@ loader.load(
     (gltf) => {
         gltf.scene.traverse(child => {
             const names = [
-                "horizontalPlane_right",
                 "horizontalPlane_left",
-                "verticalPlane_right",
-                "verticalPlane_left",
+                "horizontalPlane_right",
+                "roundPlane_left",
                 "roundPlane_right",
-                "roundPlane_left"
+                "verticalPlane_left",
+                "verticalPlane_right"
             ];
             const index = names.indexOf(child.name);
             if (index !== -1) {
