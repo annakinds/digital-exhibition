@@ -1,5 +1,5 @@
 import * as THREE from 'three'; 
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; 
 import portalVertexShader from '../shaders/portal/vertex.glsl?raw';
 import portalFragmentShader from '../shaders/portal/fragment.glsl?raw';
 
