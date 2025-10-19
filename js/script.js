@@ -1,5 +1,6 @@
-import * as THREE from 'three'; 
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import * as THREE from "https://unpkg.com/three@0.169.0/build/three.module.js";
+import { GLTFLoader } from "https://unpkg.com/three@0.169.0/examples/jsm/loaders/GLTFLoader.js";
+import { BufferGeometryUtils } from "https://unpkg.com/three@0.169.0/examples/jsm/utils/BufferGeometryUtils.js";
 import portalVertexShader from '../shaders/portal/vertex.glsl?raw';
 import portalFragmentShader from '../shaders/portal/fragment.glsl?raw';
 
