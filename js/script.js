@@ -110,7 +110,7 @@ const shaderMaterials = textures.map((texture) => {
         vertexShader: portalVertexShader,
         fragmentShader: portalFragmentShader,
         side: THREE.DoubleSide,
-        glslVersion: THREE.GLSL3
+        // glslVersion: THREE.GLSL3
     });
 });
 

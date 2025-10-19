@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 uniform float iTime;
 uniform sampler2D iChannel0;
 
