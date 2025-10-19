@@ -96,6 +96,7 @@ directionalLight2.position.set(-5, 10, -7.5);
 
 const loader = new GLTFLoader();
 const textures = [];
+const photoPlanes = [];
 
 
 frames.forEach((frame, index) => {
@@ -109,7 +110,11 @@ frames.forEach((frame, index) => {
 });
 console.log(textures);
 
-const shadertoy = textures.map((texture) => {
+const basicMaterials = textures.map((tex) => {
+    return new THREE.MeshBasicMaterial({ map: tex });
+});
+
+const shaderMaterials = textures.map((texture) => {
     return new THREE.ShaderMaterial({
         uniforms: {
             iResolution: { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 1) },
@@ -121,27 +126,25 @@ const shadertoy = textures.map((texture) => {
     });
 });
 
+
 loader.load(
     'assets/Exhibition.glb',
     (gltf) => {
         gltf.scene.traverse(child => {
-            if (child.name === "horizontalPlane_right") {
-                child.material = shadertoy[0];
-            }
-            if (child.name === "horizontalPlane_left") {
-                child.material = shadertoy[1];
-            }
-            if (child.name === "verticalPlane_right") {
-                child.material = shadertoy[2];
-            }
-            if (child.name === "verticalPlane_left") {
-                child.material = shadertoy[3];
-            }
-            if (child.name === "roundPlane_right") {
-                child.material = shadertoy[4];
-            }
-            if (child.name === "roundPlane_left") {
-                child.material = shadertoy[5];
+            const names = [
+                "horizontalPlane_right",
+                "horizontalPlane_left",
+                "verticalPlane_right",
+                "verticalPlane_left",
+                "roundPlane_right",
+                "roundPlane_left"
+            ];
+
+            const index = names.indexOf(child.name);
+            if (index !== -1) {
+                child.material = basicMaterials[index]; // Eerst gewone texture
+                child.userData.shaderIndex = index;      // Onthouden welke shader hoort
+                photoPlanes.push(child);                // Klikbaar maken
             }
         });
 
@@ -155,7 +158,7 @@ const clock = new THREE.Clock()
 const draw = () => {
     const elapsedTime = clock.getElapsedTime()
 
-    shadertoy.forEach((mat) => {
+    shaderMaterials.forEach((mat) => {
         mat.uniforms.iTime.value = elapsedTime
     });
     // controls.update()
@@ -186,7 +189,23 @@ window.addEventListener('mousedown', (event) => {
         previousMouseX = event.clientX;
         previousMouseY = event.clientY;
     }
+
 });
+
+window.addEventListener('click', (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(photoPlanes);
+
+    if (intersects.length > 0) {
+        const plane = intersects[0].object;
+        const shaderIndex = plane.userData.shaderIndex;
+        plane.material = shaderMaterials[shaderIndex];
+    }
+});
+
 
 window.addEventListener('mousemove', (event) => {
     if (isDragging && selectedCube) {
