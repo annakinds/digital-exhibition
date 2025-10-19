@@ -1,5 +1,10 @@
 import * as THREE from "https://unpkg.com/three@0.169.0/build/three.module.js";
 import { GLTFLoader } from "https://unpkg.com/three@0.169.0/examples/jsm/loaders/GLTFLoader.js";
+const loadShader = async (url) => {
+    const response = await fetch(url);
+    return await response.text();
+}
+
 const portalVertexShader = await loadShader('../shaders/portal/vertex.glsl?raw');
 const portalFragmentShader = await loadShader('../shaders/portal/fragment.glsl?raw');
 
